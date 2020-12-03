@@ -1,0 +1,10 @@
+{
+  "name": "library-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node backend/src/app.js | yarn start-frontend",
+    "start-frontend": "cd frontend && yarn start"
+  }
+}
