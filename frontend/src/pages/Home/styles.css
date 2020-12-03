@@ -41,15 +41,3 @@
   height: 20px;
   width: 20px;
 }
-
-.modal-check {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-top: 10px;
-}
-
-.modal-check .check-label {
-  margin-right: 15px;
-  margin-bottom: 0;
-}
