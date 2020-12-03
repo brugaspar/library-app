@@ -55,7 +55,7 @@ const Home = () => {
 
     try {
       if (authorId === 0 || statusId === 0) {
-        throw new Error;
+        throw new Error();
       }
 
       await api.post('books', {
