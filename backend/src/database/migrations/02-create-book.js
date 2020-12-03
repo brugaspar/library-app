@@ -9,8 +9,14 @@ exports.up = function (knex) {
       .inTable('author')
       .onUpdate('cascade')
 
+    table
+      .integer('status_id')
+      .notNullable()
+      .references('id')
+      .inTable('status')
+      .onUpdate('cascade')
+
     table.string('title', 50).notNullable()
-    table.string('status', 20).notNullable().defaultTo('AVAILABLE');
 
     table.timestamp('created_at').notNullable()
     table.timestamp('updated_at').notNullable()

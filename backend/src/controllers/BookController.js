@@ -4,17 +4,21 @@ const connection = require('../database/connection');
 
 module.exports = {
   async index(request, response) {
-    const books = await connection('book').join('author', 'author.id', '=', 'book.author_id').select('*', 'author.name as author_name');
+    const books = await connection('book')
+      .join('author', 'author.id', '=', 'book.author_id')
+      .join('status', 'status.id', '=', 'book.status_id')
+      .select('book.id', 'book.title', 'book.created_at', 'book.updated_at', 'author.name as author_name', 'status.name as status_name');
 
     return response.status(200).json(books);
   },
 
   async store(request, response) {
-    const { title, authorId } = request.body;
+    const { title, authorId, statusId } = request.body;
 
     const book = {
       title,
       author_id: authorId,
+      status_id: statusId,
       created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
       updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
     };
@@ -28,10 +32,11 @@ module.exports = {
 
   async update(request, response) {
     const id = request.params.id;
-    const { title, authorId } = request.body;
+    const { title, authorId, statusId = 1 } = request.body;
 
     const book = {
       title,
+      status_id: statusId,
       author_id: authorId,
       updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
     };
