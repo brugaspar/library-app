@@ -7,7 +7,7 @@ module.exports = {
     const books = await connection('book')
       .join('author', 'author.id', '=', 'book.author_id')
       .join('status', 'status.id', '=', 'book.status_id')
-      .select('book.id', 'book.title', 'book.created_at', 'book.updated_at', 'author.name as author_name', 'status.name as status_name');
+      .select('book.id', 'book.title', 'book.created_at', 'book.updated_at', 'author.name as author_name', 'status.name as status_name', 'status.id as status_id');
 
     return response.status(200).json(books);
   },
@@ -32,7 +32,7 @@ module.exports = {
 
   async update(request, response) {
     const id = request.params.id;
-    const { title, authorId, statusId = 1 } = request.body;
+    const { title, authorId, statusId } = request.body;
 
     const book = {
       title,
