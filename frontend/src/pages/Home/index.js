@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ImBooks } from 'react-icons/im';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
 import Table from '../../components/Table';
+
+import api from '../../services/api';
 
 import './styles.css';
 
@@ -10,9 +12,60 @@ const Home = () => {
   const [authorModal, setAuthorModal] = useState(false);
   const [bookModal, setBookModal] = useState(false);
 
+  const [authorId, setAuthorId] = useState(0);
+  const [authorName, setAuthorName] = useState('');
+  const [bookTitle, setBookTitle] = useState('');
+  const [borrowed, setBorrowed] = useState(false);
+
+  const [authors, setAuthors] = useState([]);
+  const [books, setBooks] = useState([]);
+
   const authorToggle = () => setAuthorModal(!authorModal);
 
   const bookToggle = () => setBookModal(!bookModal);
+
+  const handleAuthorRegister = async (event) => {
+    event.preventDefault();
+
+    await api.post('authors', { name: authorName });
+
+    loadAuthors();
+    setAuthorName('');
+    authorToggle();
+  }
+
+  const handleBookRegister = async (event) => {
+    event.preventDefault();
+
+    await api.post('books', {
+      title: bookTitle,
+      authorId,
+      status: 'borrowed'
+    });
+
+    loadBooks();
+    setBookTitle('');
+    setAuthorId(0);
+    setBorrowed(false);
+    bookToggle();
+  }
+
+  const loadAuthors = async () => {
+    const response = await api.get('authors');
+
+    setAuthors(response.data);
+  }
+
+  const loadBooks = async () => {
+    const response = await api.get('books');
+
+    setBooks(response.data);
+  }
+
+  useEffect(() => {
+    loadAuthors();
+    loadBooks();
+  }, []);
 
   return (
     <div className="home-container">
@@ -29,7 +82,7 @@ const Home = () => {
       </div>
 
       <div className="home-content">
-        <Table />
+        <Table books={books} />
       </div>
 
 
@@ -44,10 +97,12 @@ const Home = () => {
             id="name"
             placeholder="Nome"
             className="form-control"
+            value={authorName}
+            onChange={event => setAuthorName(event.target.value)}
           />
         </ModalBody>
         <ModalFooter>
-          <button className="btn btn-success" onClick={authorToggle}>Cadastrar</button>{' '}
+          <button className="btn btn-success" onClick={handleAuthorRegister}>Cadastrar</button>{' '}
           <button className="btn btn-danger" onClick={authorToggle}>Cancelar</button>
         </ModalFooter>
       </Modal>
@@ -63,21 +118,35 @@ const Home = () => {
             id="title"
             placeholder="Título"
             className="form-control"
+            value={bookTitle}
+            onChange={event => setBookTitle(event.target.value)}
           />
 
           <label className="modal-label" htmlFor="author">Autor do livro</label>
-          <select id="author" className="form-control">
+          <select
+            id="author"
+            className="form-control"
+            value={authorId}
+            onChange={event => setAuthorId(event.target.value)}
+          >
             <option value="0" disabled>Selecione...</option>
-            <option value="1">Machado de Assis</option>
+            {authors.map(author => (
+              <option key={author.id} value={author.id}>{author.name}</option>
+            ))}
           </select>
 
           <div className="modal-check">
             <label className="modal-label check-label" htmlFor="author">Emprestado:</label>
-            <input type="checkbox" className="modal-input" />
+            <input
+              type="checkbox"
+              className="modal-input"
+              value={borrowed}
+              onChange={() => setBorrowed(!borrowed)}
+            />
           </div>
         </ModalBody>
         <ModalFooter>
-          <button className="btn btn-success" onClick={bookToggle}>Cadastrar</button>{' '}
+          <button className="btn btn-success" onClick={handleBookRegister}>Cadastrar</button>{' '}
           <button className="btn btn-danger" onClick={bookToggle}>Cancelar</button>
         </ModalFooter>
       </Modal>

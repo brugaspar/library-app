@@ -1,6 +1,6 @@
 import { Table } from 'reactstrap';
 
-const TableData = () => {
+const TableData = ({ books }) => {
   return (
     <Table bordered>
       <thead className="thead-dark">
@@ -15,33 +15,17 @@ const TableData = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Harry Potter</td>
-          <td>J.K. Rowling</td>
-          <td>02/12/2020 | 15:40</td>
-          <td>02/12/2020 | 22:49</td>
-          <td>Disponível</td>
-          <td align="center">X | Y</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Harry Potter</td>
-          <td>J.K. Rowling</td>
-          <td>02/12/2020 | 15:40</td>
-          <td>02/12/2020 | 22:49</td>
-          <td>Disponível</td>
-          <td align="center">X | Y</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Harry Potter</td>
-          <td>J.K. Rowling</td>
-          <td>02/12/2020 | 15:40</td>
-          <td>02/12/2020 | 22:49</td>
-          <td>Disponível</td>
-          <td align="center">X | Y</td>
-        </tr>
+        {books.map(book => (
+          <tr key={book.id}>
+            <th scope="row">{book.id}</th>
+            <td>{book.title}</td>
+            <td>{book.author_name}</td>
+            <td>{book.created_at}</td>
+            <td>{book.updated_at}</td>
+            <td>{book.status}</td>
+            <td align="center">X | Y</td>
+          </tr>
+        ))}
       </tbody>
     </Table>
   );
