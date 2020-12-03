@@ -4,8 +4,7 @@
 
 ### Projeto Controle de Biblioteca
 
-- Aplicação para cadastro de livros de uma biblioteca. Deve ser possível
-modificar o status do livro, assim como excluí-los
+- Aplicação para cadastro de livros de uma biblioteca. Deve ser possível cadastrar autores, livros, assim como modificar o status do livro e excluí-lo
 
 ---
 
