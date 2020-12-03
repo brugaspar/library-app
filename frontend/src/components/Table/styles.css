@@ -1,0 +1,10 @@
+.fi-check:hover, .fi-trash:hover {
+  opacity: 80%;
+  box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.fi-trash {
+  margin-bottom: 2px;
+  margin-left: 10px;
+}

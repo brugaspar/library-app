@@ -12,17 +12,26 @@ const Home = () => {
   const [authorModal, setAuthorModal] = useState(false);
   const [bookModal, setBookModal] = useState(false);
 
+  const [statusId, setStatusId] = useState(0);
   const [authorId, setAuthorId] = useState(0);
+
   const [authorName, setAuthorName] = useState('');
   const [bookTitle, setBookTitle] = useState('');
-  const [borrowed, setBorrowed] = useState(false);
 
   const [authors, setAuthors] = useState([]);
+  const [status, setStatus] = useState([]);
   const [books, setBooks] = useState([]);
 
   const authorToggle = () => setAuthorModal(!authorModal);
 
   const bookToggle = () => setBookModal(!bookModal);
+
+  const reset = () => {
+    setBookTitle('');
+    setAuthorId(0);
+    setStatusId(0);
+    setAuthorName('');
+  }
 
   const handleAuthorRegister = async (event) => {
     event.preventDefault();
@@ -30,30 +39,37 @@ const Home = () => {
     await api.post('authors', { name: authorName });
 
     loadAuthors();
-    setAuthorName('');
     authorToggle();
+
+    reset();
   }
 
   const handleBookRegister = async (event) => {
     event.preventDefault();
 
-    await api.post('books', {
+    const response = await api.post('books', {
       title: bookTitle,
       authorId,
-      status: 'borrowed'
+      statusId
     });
+    console.log(response.data)
 
     loadBooks();
-    setBookTitle('');
-    setAuthorId(0);
-    setBorrowed(false);
     bookToggle();
+
+    reset();
   }
 
   const loadAuthors = async () => {
     const response = await api.get('authors');
 
     setAuthors(response.data);
+  }
+
+  const loadStatus = async () => {
+    const response = await api.get('status');
+
+    setStatus(response.data);
   }
 
   const loadBooks = async () => {
@@ -64,6 +80,7 @@ const Home = () => {
 
   useEffect(() => {
     loadAuthors();
+    loadStatus();
     loadBooks();
   }, []);
 
@@ -91,20 +108,23 @@ const Home = () => {
           <h2>Cadastro de autor</h2>
         </ModalHeader>
         <ModalBody>
-          <label className="modal-label" htmlFor="name">Nome do autor</label>
-          <input
-            type="text"
-            id="name"
-            placeholder="Nome"
-            className="form-control"
-            value={authorName}
-            onChange={event => setAuthorName(event.target.value)}
-          />
+          <form onSubmit={handleAuthorRegister}>
+            <label className="modal-label" htmlFor="name">Nome do autor</label>
+            <input
+              type="text"
+              id="name"
+              placeholder="Nome"
+              className="form-control"
+              required
+              value={authorName}
+              onChange={event => setAuthorName(event.target.value)}
+            />
+            <ModalFooter>
+              <button className="btn btn-success" type="submit">Cadastrar</button>{' '}
+              <button className="btn btn-danger" onClick={authorToggle}>Cancelar</button>
+            </ModalFooter>
+          </form>
         </ModalBody>
-        <ModalFooter>
-          <button className="btn btn-success" onClick={handleAuthorRegister}>Cadastrar</button>{' '}
-          <button className="btn btn-danger" onClick={authorToggle}>Cancelar</button>
-        </ModalFooter>
       </Modal>
 
       <Modal isOpen={bookModal} toggle={bookToggle}>
@@ -136,13 +156,18 @@ const Home = () => {
           </select>
 
           <div className="modal-check">
-            <label className="modal-label check-label" htmlFor="author">Emprestado:</label>
-            <input
-              type="checkbox"
-              className="modal-input"
-              value={borrowed}
-              onChange={() => setBorrowed(!borrowed)}
-            />
+            <label className="modal-label check-label" htmlFor="status">Status:</label>
+            <select
+              id="status"
+              className="form-control"
+              value={statusId}
+              onChange={event => setStatusId(event.target.value)}
+            >
+              <option value="0" disabled>Selecione...</option>
+              {status.map(st => (
+                <option key={st.id} value={st.id}>{st.name}</option>
+              ))}
+            </select>
           </div>
         </ModalBody>
         <ModalFooter>
