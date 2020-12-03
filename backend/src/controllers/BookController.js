@@ -4,7 +4,7 @@ const connection = require('../database/connection');
 
 module.exports = {
   async index(request, response) {
-    const books = await connection('book').distinct();
+    const books = await connection('book').join('author', 'author.id', '=', 'book.author_id').select('*', 'author.name as author_name');
 
     return response.status(200).json(books);
   },
